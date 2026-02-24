@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArchiveOne — Chat</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #f5f5f5;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(245, 245, 245, 0.08);
+}
+
+header .brand {
+  font-size: 18px;
+  letter-spacing: 2px;
+  opacity: 0.9;
+  text-decoration: none;
+  color: #f5f5f5;
+}
+
+header .back {
+  font-size: 13px;
+  opacity: 0.4;
+  text-decoration: none;
+  color: #f5f5f5;
+  transition: opacity 0.2s;
+}
+
+header .back:hover {
+  opacity: 0.8;
+}
+
+/* ===== MESSAGES AREA ===== */
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245,245,245,0.1) transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: rgba(245,245,245,0.1);
+  border-radius: 2px;
+}
+
+.bubble {
+  max-width: 480px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: rgba(245, 245, 245, 0.1);
+  border: 1px solid rgba(245, 245, 245, 0.12);
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: rgba(245, 245, 245, 0.04);
+  border: 1px solid rgba(245, 245, 245, 0.07);
+  opacity: 0.9;
+}
+
+.bubble.typing {
+  align-self: flex-start;
+  opacity: 0.4;
+  font-style: italic;
+  background: none;
+  border: none;
+  padding-left: 0;
+}
+
+/* ===== INPUT AREA ===== */
+
+.input-area {
+  padding: 20px 32px;
+  border-top: 1px solid rgba(245, 245, 245, 0.08);
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.input-area textarea {
+  flex: 1;
+  background: rgba(245, 245, 245, 0.05);
+  border: 1px solid rgba(245, 245, 245, 0.12);
+  border-radius: 10px;
+  color: #f5f5f5;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  padding: 12px 16px;
+  resize: none;
+  outline: none;
+  line-height: 1.5;
+  max-height: 120px;
+  overflow-y: auto;
+  transition: border-color 0.2s;
+}
+
+.input-area textarea::placeholder {
+  opacity: 0.3;
+}
+
+.input-area textarea:focus {
+  border-color: rgba(245, 245, 245, 0.3);
+}
+
+.input-area button {
+  background: rgba(245, 245, 245, 0.1);
+  border: 1px solid rgba(245, 245, 245, 0.15);
+  border-radius: 10px;
+  color: #f5f5f5;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 12px 20px;
+  transition: background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.input-area button:hover:not(:disabled) {
+  background: rgba(245, 245, 245, 0.18);
+}
+
+.input-area button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ===== API KEY BANNER ===== */
+
+.api-banner {
+  padding: 12px 32px;
+  background: rgba(245, 245, 245, 0.03);
+  border-bottom: 1px solid rgba(245, 245, 245, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.api-banner input {
+  flex: 1;
+  max-width: 340px;
+  background: rgba(245, 245, 245, 0.05);
+  border: 1px solid rgba(245, 245, 245, 0.1);
+  border-radius: 6px;
+  color: #f5f5f5;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  padding: 6px 10px;
+  outline: none;
+}
+
+.api-banner input::placeholder {
+  opacity: 0.3;
+}
+
+.api-banner label {
+  opacity: 0.4;
+  white-space: nowrap;
+}
+
+.api-banner .save-key {
+  background: none;
+  border: 1px solid rgba(245, 245, 245, 0.15);
+  border-radius: 6px;
+  color: #f5f5f5;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 6px 12px;
+  transition: background 0.2s;
+}
+
+.api-banner .save-key:hover {
+  background: rgba(245, 245, 245, 0.08);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a class="brand" href="index.html">ArchiveOne</a>
+  <a class="back" href="index.html">← back</a>
+</header>
+
+<div class="api-banner">
+  <label for="api-key">OpenAI API key</label>
+  <input id="api-key" type="password" placeholder="sk-..." autocomplete="off" title="Your key is stored unencrypted in localStorage — use only on trusted devices.">
+  <button class="save-key" onclick="saveKey()">save</button>
+  <span style="opacity:0.25;font-size:11px;">stored locally in your browser</span>
+</div>
+
+<div class="messages" id="messages">
+  <div class="bubble assistant">Hello. What's on your mind?</div>
+</div>
+
+<div class="input-area">
+  <textarea
+    id="input"
+    rows="1"
+    placeholder="type a message..."
+    onkeydown="handleKey(event)"
+    oninput="autoResize(this)"
+  ></textarea>
+  <button id="send-btn" onclick="sendMessage()">send</button>
+</div>
+
+<script>
+  const messagesEl = document.getElementById('messages');
+  const inputEl = document.getElementById('input');
+  const sendBtn = document.getElementById('send-btn');
+  const apiKeyEl = document.getElementById('api-key');
+
+  let apiKey = localStorage.getItem('archiveone_api_key') || '';
+  if (apiKey) apiKeyEl.value = apiKey;
+
+  const history = [
+    { role: 'system', content: 'You are a thoughtful assistant embedded in ArchiveOne, a personal archive of films, music, books, and videos. Be concise and reflective.' }
+  ];
+
+  function saveKey() {
+    apiKey = apiKeyEl.value.trim();
+    localStorage.setItem('archiveone_api_key', apiKey);
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function appendBubble(role, text) {
+    const div = document.createElement('div');
+    div.className = 'bubble ' + role;
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return div;
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+
+    inputEl.value = '';
+    autoResize(inputEl);
+    sendBtn.disabled = true;
+
+    appendBubble('user', text);
+    history.push({ role: 'user', content: text });
+
+    const typingEl = appendBubble('typing', 'thinking...');
+
+    try {
+      if (!apiKey) {
+        throw new Error('No API key set. Please enter your OpenAI API key above.');
+      }
+
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + apiKey
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: history,
+          max_tokens: 512
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || 'API error ' + res.status);
+      }
+
+      const data = await res.json();
+      const reply = data.choices[0].message.content;
+      history.push({ role: 'assistant', content: reply });
+
+      typingEl.remove();
+      appendBubble('assistant', reply);
+    } catch (err) {
+      typingEl.remove();
+      appendBubble('assistant', '⚠ ' + err.message);
+    } finally {
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+  }
+</script>
+
+</body>
+</html>
