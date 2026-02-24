@@ -11,11 +11,7 @@
     color: #f5f5f5;
     font-family: Arial, Helvetica, sans-serif;
   }
-.back-button {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-}
+
   .container {
     max-width: 600px;
     margin: 100px auto;
@@ -23,17 +19,49 @@
     flex-direction: column;
     gap: 20px;
   }
-<a href="index.html" class="secondary-text back-button">back</a>
+
   h2 {
     font-weight: 400;
   }
 
+  /* 🔥 PADRÃO VISUAL */
+  .secondary-text {
+    font-size: 16px;
+    opacity: 0.6;
+    color: #f5f5f5;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .secondary-text:hover {
+    opacity: 1;
+  }
+
+  /* 🔥 BOTÃO BACK */
+  .back-button {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+  }
+
+  /* 🔥 INPUTS */
   input, select, textarea {
-  background: transparent;
-  border: 1px solid #333;
-  color: #f5f5f5;
-  padding: 10px;
-}
+    background-color: #0a0a0a;
+    border: 1px solid #333;
+    color: #f5f5f5;
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  select {
+    appearance: none;
+  }
+
+  option {
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+  }
 
   button {
     background: transparent;
@@ -46,6 +74,9 @@
 </head>
 
 <body>
+
+<!-- 🔥 BOTÃO BACK (AGORA NO LUGAR CERTO) -->
+<a href="index.html" class="secondary-text back-button">back</a>
 
 <div class="container">
   <h2>New Entry</h2>
@@ -96,7 +127,6 @@ function salvar() {
 
   alert("Salvo com sucesso");
 
-  // limpa campos
   document.getElementById("title").value = "";
   document.getElementById("date").value = "";
   document.getElementById("rating").value = "";
