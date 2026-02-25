@@ -10,18 +10,19 @@
       color: #f5f5f5;
       font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
+      overflow-y: scroll; /* Mantém a barra para o menu não pular */
     }
 
-   /* ===== MENU IDENTICO À HOME (CORRIGIDO) ===== */
+    /* ===== MENU IDENTICO À HOME (CORRIGIDO) ===== */
     .menu {
-      position: absolute; /* Ou fixed, se quiser que ele siga a rolagem */
+      position: absolute;
       top: 30px;
       left: 0;
       width: 100%;
       display: flex;
       justify-content: center;
       gap: 60px;
-      z-index: 1000; /* Garante que fique acima de tudo */
+      z-index: 1000;
     }
 
     .menu a { text-decoration: none; }
@@ -40,20 +41,45 @@
     /* ===== CONTAINER DA LISTA ===== */
     .container {
       max-width: 600px;
-      margin: 150px auto 100px auto; /* Espaço para o menu no topo */
+      margin: 150px auto 100px auto;
       display: flex;
       flex-direction: column;
       gap: 20px;
+      text-align: center; /* CENTRALIZA O TÍTULO "ARTICLES" */
     }
 
-    h2 { font-weight: 400; margin-bottom: 20px; }
+    h2 { 
+      font-weight: 400; 
+      font-size: 32px;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
 
-    .entry { position: relative; border-left: 1px solid #444; padding: 15px; opacity: 0.8; cursor: pointer; transition: background 0.3s ease; }
+    /* ENTRADAS DA LISTA (Mantidas à esquerda para leitura) */
+    .entry { 
+      text-align: left;
+      position: relative; 
+      border-left: 1px solid #444; 
+      padding: 15px; 
+      opacity: 0.8; 
+      cursor: pointer; 
+      transition: background 0.3s ease; 
+    }
+    
     .entry:hover { background: #1a1a1a; }
     .date { font-size: 12px; opacity: 0.5; }
-    .delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #f5f5f5; font-size: 18px; opacity: 0; cursor: pointer; transition: opacity 0.3s ease; z-index: 10; }
+    
+    .delete-btn { 
+      position: absolute; top: 10px; right: 10px; 
+      background: none; border: none; color: #f5f5f5; 
+      font-size: 18px; opacity: 0; cursor: pointer; 
+      transition: opacity 0.3s ease; z-index: 10; 
+    }
+    
     .entry:hover .delete-btn { opacity: 0.6; }
     .delete-btn:hover { opacity: 1 !important; color: #ff4444; }
+    
     .title { font-size: 18px; margin-top: 5px; font-weight: bold; }
     .meta { font-size: 13px; opacity: 0.6; margin-top: 4px; }
     .notes { font-size: 14px; opacity: 0.7; margin-top: 8px; line-height: 1.4; }
@@ -76,7 +102,7 @@
 
   <div class="container" id="timeline">
     <h2>Articles</h2>
-    </div>
+  </div>
 
   <a href="index.html" class="secondary-text back-button">← Back</a>
 
@@ -102,7 +128,6 @@ function excluir(event, id) {
 const timeline = document.getElementById("timeline");
 const dados = JSON.parse(localStorage.getItem("archive")) || [];
 
-// Filtro para Articles
 const artigos = dados.filter(item => {
     return item.category && item.category.trim().toLowerCase() === "articles";
 });
@@ -110,7 +135,7 @@ const artigos = dados.filter(item => {
 artigos.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 if (artigos.length === 0) {
-    timeline.innerHTML += `<p style="opacity:0.5;">No articles found. (Items in total DB: ${dados.length})</p>`;
+    timeline.innerHTML += `<p style="opacity:0.5;">No articles found.</p>`;
 } else {
     artigos.forEach(item => {
         const div = document.createElement("div");
@@ -130,6 +155,5 @@ if (artigos.length === 0) {
     });
 }
 </script>
-
 </body>
 </html>
