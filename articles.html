@@ -12,14 +12,16 @@
       min-height: 100vh;
     }
 
-    /* ===== MENU IDENTICO À HOME ===== */
+   /* ===== MENU IDENTICO À HOME (CORRIGIDO) ===== */
     .menu {
-      position: absolute;
+      position: absolute; /* Ou fixed, se quiser que ele siga a rolagem */
       top: 30px;
+      left: 0;
       width: 100%;
       display: flex;
       justify-content: center;
       gap: 60px;
+      z-index: 1000; /* Garante que fique acima de tudo */
     }
 
     .menu a { text-decoration: none; }
