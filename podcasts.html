@@ -25,7 +25,7 @@
     border-left: 1px solid #444;
     padding: 15px;
     opacity: 0.8;
-    cursor: pointer; /* Indica que é clicável para editar */
+    cursor: pointer;
     transition: background 0.3s ease;
   }
 
@@ -49,7 +49,7 @@
     opacity: 0;
     cursor: pointer;
     transition: opacity 0.3s ease;
-    z-index: 10; /* Garante que o botão fique acima do card */
+    z-index: 10;
   }
 
   .entry:hover .delete-btn {
@@ -94,7 +94,7 @@
   }
 
   .back-button {
-    position: fixed; /* Mudei para fixed para garantir visibilidade */
+    position: fixed;
     bottom: 30px;
     left: 30px;
   }
@@ -103,14 +103,13 @@
 
 <body>
 
-<a href="#" class="secondary-text back-button" id="btn-voltar">← Back</a>
+<a href="index.html" class="secondary-text back-button">← Back</a>
 
 <div class="container" id="timeline">
   <h2>Podcasts</h2>
 </div>
 
 <script>
-// 1. Funções Auxiliares (Fora do Loop)
 function linkify(text) {
   if (!text) return "";
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -120,7 +119,7 @@ function linkify(text) {
 }
 
 function excluir(event, id) {
-  event.stopPropagation(); // Impede que o clique no "X" abra a edição
+  event.stopPropagation(); 
   if (confirm("Deseja realmente excluir este registro?")) {
     let dados = JSON.parse(localStorage.getItem("archive")) || [];
     dados = dados.filter(item => item.id !== id);
@@ -129,7 +128,6 @@ function excluir(event, id) {
   }
 }
 
-// 2. Renderização
 const dados = JSON.parse(localStorage.getItem("archive")) || [];
 const podcasts = dados
   .filter(item => item.category === "Podcasts")
@@ -141,10 +139,9 @@ podcasts.forEach(item => {
   const div = document.createElement("div");
   div.classList.add("entry");
   
-  // Ao clicar no card, vai para a página de edição
   div.onclick = () => {
     localStorage.setItem("editando", item.id);
-    window.location.href = "archive.html";
+    window.location.href = "archive.html"; // Vai para o formulário
   };
 
   div.innerHTML = `
@@ -153,30 +150,3 @@ podcasts.forEach(item => {
     <div class="title">${item.title || "Sem título"}</div>
     ${item.rating ? `<div class="meta">Rating: ${item.rating}/5</div>` : ""}
     ${item.notes ? `<div class="notes">${linkify(item.notes)}</div>` : ""}
-  `;
-
-  timeline.appendChild(div);
-});
-
-  // Ajusta o destino do botão Back dinamicamente
-document.getElementById('category').addEventListener('change', atualizarLinkBack);
-
-function atualizarLinkBack() {
-    const categoria = document.getElementById("category").value;
-    const linkBack = document.getElementById("btn-voltar");
-    
-    // Se estiver no modo edição, o back deve levar para a página da categoria
-    // Se não, pode voltar para a index
-    if (localStorage.getItem("editando")) {
-        linkBack.href = categoria.toLowerCase().replace(/\s/g, "") + ".html";
-    } else {
-        linkBack.href = "index.html";
-    }
-}
-
-// Chama uma vez no carregar da página para definir o link inicial
-window.addEventListener('load', atualizarLinkBack);
-</script>
-
-</body>
-</html>
