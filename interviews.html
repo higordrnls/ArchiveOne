@@ -39,3 +39,44 @@ function linkify(text) {
 function excluir(event, id) {
   event.stopPropagation(); 
   if (confirm("Deseja realmente excluir esta entrevista?")) {
+    let dados = JSON.parse(localStorage.getItem("archive")) || [];
+    dados = dados.filter(item => item.id !== id);
+    localStorage.setItem("archive", JSON.stringify(dados));
+    location.reload();
+  }
+}
+
+const timeline = document.getElementById("timeline");
+const dados = JSON.parse(localStorage.getItem("archive")) || [];
+
+// Filtro blindado para "Interviews"
+const entrevistas = dados.filter(item => {
+    return item.category && item.category.trim().toLowerCase() === "interviews";
+});
+
+entrevistas.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+if (entrevistas.length === 0) {
+    timeline.innerHTML += `<p style="opacity:0.5;">No interviews found. (Items in total DB: ${dados.length})</p>`;
+} else {
+    entrevistas.forEach(item => {
+        const div = document.createElement("div");
+        div.classList.add("entry");
+        div.onclick = () => {
+            localStorage.setItem("editando", item.id);
+            window.location.href = "archive.html";
+        };
+
+        div.innerHTML = `
+            <button class="delete-btn" onclick="excluir(event, ${item.id})">×</button>
+            <div class="date">${item.date || ""}</div>
+            <div class="title">${item.title || "Untitled"}</div>
+            ${item.rating ? `<div class="meta">Rating: ${item.rating}/5</div>` : ""}
+            ${item.notes ? `<div class="notes">${linkify(item.notes)}</div>` : ""}
+        `;
+        timeline.appendChild(div);
+    });
+}
+</script>
+</body>
+</html>
