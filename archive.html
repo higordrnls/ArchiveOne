@@ -37,6 +37,7 @@
     position: absolute;
     bottom: 30px;
     left: 30px;
+    cursor: pointer;
   }
 
   input, select, textarea {
@@ -68,7 +69,7 @@
 
 <body>
 
-<a href="index.html" class="secondary-text back-button" onclick="localStorage.removeItem('editando')">← Back</a>
+<a href="javascript:void(0)" class="secondary-text back-button" onclick="voltar()">← Back</a>
 
 <div class="container">
   <h2 id="page-title">New Entry</h2>
@@ -98,80 +99,4 @@
 <script>
 // --- LÓGICA DE CARREGAMENTO (EDITAR) ---
 window.onload = function() {
-  const editandoId = localStorage.getItem("editando");
-  
-  if (editandoId) {
-    const dados = JSON.parse(localStorage.getItem("archive")) || [];
-    const item = dados.find(i => i.id == editandoId);
-
-    if (item) {
-      // Muda os textos da página
-      document.getElementById("page-title").innerText = "Edit Entry";
-      document.getElementById("main-button").innerText = "Update Archive";
-
-      // Preenche os campos
-      document.getElementById("title").value = item.title || "";
-      document.getElementById("category").value = item.category || "Podcasts";
-      document.getElementById("date").value = item.date || "";
-      document.getElementById("rating").value = item.rating || "";
-      document.getElementById("notes").value = item.notes || "";
-    }
-  }
-};
-
-// --- LÓGICA DE SALVAMENTO ---
-function salvar() {
-  const title = document.getElementById("title").value;
-  const category = document.getElementById("category").value;
-  const date = document.getElementById("date").value;
-  const rating = document.getElementById("rating").value;
-  const notes = document.getElementById("notes").value;
-
-  let dados = JSON.parse(localStorage.getItem("archive")) || [];
-  const editandoId = localStorage.getItem("editando");
-
-  if (editandoId) {
-    // Modo Edição: Localiza e substitui
-    const index = dados.findIndex(i => i.id == editandoId);
-    if (index !== -1) {
-      dados[index] = {
-        id: Number(editandoId), // Mantém o ID original
-        title,
-        category,
-        date,
-        rating,
-        notes
-      };
-    }
-    localStorage.removeItem("editando"); // Limpa após salvar
-  } else {
-    // Modo Novo Item
-    const novoItem = {
-      id: Date.now(),
-      title,
-      category,
-      date,
-      rating,
-      notes
-    };
-    dados.push(novoItem);
-  }
-
-localStorage.setItem("archive", JSON.stringify(dados));
-
-  alert("Saved successfully!");
-
-  // Se a categoria for Podcast, volta para podcasts.html
-  // Caso contrário, segue a regra geral de transformar o nome da categoria no link
-  let destination = category.toLowerCase().replace(/\s/g, "") + ".html";
-  
-  window.location.href = destination;
-
-  // Redireciona para a página da categoria (ex: podcasts.html)
-  const targetPage = category.toLowerCase().replace(" ", "") + ".html";
-  window.location.href = targetPage;
-}
-</script>
-
-</body>
-</html>
+  const editandoId = localStorage.getItem("editando
