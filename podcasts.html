@@ -103,7 +103,7 @@
 
 <body>
 
-<a href="index.html" class="secondary-text back-button">← Back</a>
+<a href="#" class="secondary-text back-button" id="btn-voltar">← Back</a>
 
 <div class="container" id="timeline">
   <h2>Podcasts</h2>
@@ -157,6 +157,25 @@ podcasts.forEach(item => {
 
   timeline.appendChild(div);
 });
+
+  // Ajusta o destino do botão Back dinamicamente
+document.getElementById('category').addEventListener('change', atualizarLinkBack);
+
+function atualizarLinkBack() {
+    const categoria = document.getElementById("category").value;
+    const linkBack = document.getElementById("btn-voltar");
+    
+    // Se estiver no modo edição, o back deve levar para a página da categoria
+    // Se não, pode voltar para a index
+    if (localStorage.getItem("editando")) {
+        linkBack.href = categoria.toLowerCase().replace(/\s/g, "") + ".html";
+    } else {
+        linkBack.href = "index.html";
+    }
+}
+
+// Chama uma vez no carregar da página para definir o link inicial
+window.addEventListener('load', atualizarLinkBack);
 </script>
 
 </body>
