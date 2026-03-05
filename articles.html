@@ -6,35 +6,27 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        #timeline { max-width: 600px; margin: 40px auto; }
         .entry { border-bottom: 1px solid #333; padding: 15px 0; cursor: pointer; }
+        .title { font-size: 18px; font-weight: bold; }
         .date { opacity: 0.5; font-size: 12px; }
-        .title { font-size: 18px; font-weight: bold; margin: 5px 0; }
-        .meta { font-size: 14px; color: #ccc; }
-        .notes { opacity: 0.8; font-size: 14px; margin-top: 5px; }
-        #timeline { max-width: 600px; margin: 0 auto; }
         h1 { text-align: center; font-weight: 400; }
-        .back-link { display: block; margin-top: 20px; color: #f5f5f5; text-decoration: none; opacity: 0.5; }
+        .back { display: block; text-align: center; color: #f5f5f5; text-decoration: none; opacity: 0.5; margin-top: 20px; }
     </style>
 </head>
 <body>
-
     <h1>Articles</h1>
-    <div id="timeline">Carregando...</div>
-    <a href="index.html" class="back-link">← Back</a>
+    <div id="timeline"></div>
+    <a href="index.html" class="back">← Back</a>
 
     <script>
         const supabaseUrl = 'https://vnablodqafeqyuxxirnn.supabase.co';
         const supabaseKey = 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        async function carregarDados() {
-            const timeline = document.getElementById("timeline");
-            
+        async function carregar() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) {
-                window.location.href = "index.html";
-                return;
-            }
+            if (!session) { window.location.href = "index.html"; return; }
 
             const { data: itens, error } = await _supabase
                 .from('archive')
@@ -43,35 +35,20 @@
                 .eq('user_id', session.user.id)
                 .order('entry_date', { ascending: false });
 
-            if (error) {
-                timeline.innerHTML = "Erro: " + error.message;
-                return;
-            }
+            const container = document.getElementById("timeline");
+            container.innerHTML = "";
 
-            timeline.innerHTML = "";
-
-            if (!itens || itens.length === 0) {
-                timeline.innerHTML = "<p style='opacity:0.3; text-align:center;'>No entries found.</p>";
-            } else {
+            if (itens) {
                 itens.forEach(item => {
                     const div = document.createElement("div");
                     div.className = "entry";
-                    div.onclick = () => {
-                        localStorage.setItem("editando", item.id);
-                        window.location.href = "archive.html";
-                    };
-                    div.innerHTML = `
-                        <div class="date">${item.entry_date || ""}</div>
-                        <div class="title">${item.title}</div>
-                        ${item.rating ? `<div class="meta">${item.rating}/5</div>` : ""}
-                        ${item.notes ? `<div class="notes">${item.notes}</div>` : ""}
-                    `;
-                    timeline.appendChild(div);
+                    div.onclick = () => { localStorage.setItem("editando", item.id); window.location.href = "archive.html"; };
+                    div.innerHTML = `<div class="date">${item.entry_date || ""}</div><div class="title">${item.title}</div>`;
+                    container.appendChild(div);
                 });
             }
         }
-
-        window.onload = carregarDados;
+        window.onload = carregar;
     </script>
 </body>
 </html>
