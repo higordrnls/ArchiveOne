@@ -82,6 +82,17 @@
             }
         };
 
+        /* Força o fundo das opções a ser escuro */
+select option {
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+}
+
+/* Remove o fundo branco ao clicar no campo no Chrome/Safari */
+select:focus {
+    background-color: transparent;
+}
+        
         async function salvar() {
             const { data: { session } } = await _supabase.auth.getSession();
             
