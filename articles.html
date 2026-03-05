@@ -4,85 +4,22 @@
   <meta charset="UTF-8">
   <title>Articles | ArchiveOne</title>
   <style>
-    body {
-      margin: 0;
-      background-color: #0a0a0a;
-      color: #f5f5f5;
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      overflow-y: scroll;
-    }
-
-    /* ===== MENU IDÊNTICO À HOME ===== */
-    .menu {
-      position: absolute;
-      top: 30px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      z-index: 1000;
-    }
-
+    body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; min-height: 100vh; overflow-y: scroll; }
+    .menu { position: absolute; top: 30px; left: 0; width: 100%; display: flex; justify-content: center; gap: 60px; z-index: 1000; }
     .menu a { text-decoration: none; }
-
-    .secondary-text {
-      font-size: 16px;
-      opacity: 0.6;
-      color: #f5f5f5;
-      letter-spacing: 0.5px;
-      text-decoration: none;
-      transition: opacity 0.3s ease;
-    }
-
+    .secondary-text { font-size: 16px; opacity: 0.6; color: #f5f5f5; letter-spacing: 0.5px; text-decoration: none; transition: opacity 0.3s ease; }
     .secondary-text:hover { opacity: 1; }
-
-    /* ===== CONTAINER DA LISTA ===== */
-    .container {
-      max-width: 600px;
-      margin: 150px auto 100px auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      text-align: center;
-    }
-
-    h2 { 
-      font-weight: 400; 
-      font-size: 32px;
-      letter-spacing: 1px;
-      margin-bottom: 30px;
-      opacity: 0.9;
-    }
-
-    .entry { 
-      text-align: left;
-      position: relative; 
-      border-left: 1px solid #444; 
-      padding: 15px; 
-      opacity: 0.8; 
-      cursor: pointer; 
-      transition: background 0.3s ease; 
-    }
-    
+    .container { max-width: 600px; margin: 150px auto 100px auto; display: flex; flex-direction: column; gap: 20px; text-align: center; }
+    h2 { font-weight: 400; font-size: 32px; letter-spacing: 1px; margin-bottom: 30px; opacity: 0.9; }
+    .entry { text-align: left; position: relative; border-left: 1px solid #444; padding: 15px; opacity: 0.8; cursor: pointer; transition: background 0.3s ease; }
     .entry:hover { background: #1a1a1a; }
     .date { font-size: 12px; opacity: 0.5; }
-    
-    .delete-btn { 
-      position: absolute; top: 10px; right: 10px; 
-      background: none; border: none; color: #f5f5f5; 
-      font-size: 18px; opacity: 0; cursor: pointer; 
-      transition: opacity 0.3s ease; z-index: 10; 
-    }
-    
+    .delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #f5f5f5; font-size: 18px; opacity: 0; cursor: pointer; transition: opacity 0.3s ease; z-index: 10; }
     .entry:hover .delete-btn { opacity: 0.6; }
     .delete-btn:hover { opacity: 1 !important; color: #ff4444; }
-    
     .title { font-size: 18px; margin-top: 5px; font-weight: bold; }
     .meta { font-size: 13px; opacity: 0.6; margin-top: 4px; }
     .notes { font-size: 14px; opacity: 0.7; margin-top: 8px; line-height: 1.4; }
-
     .back-button { position: fixed; bottom: 30px; left: 30px; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -114,9 +51,7 @@ const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 function linkify(text) {
   if (!text) return "";
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.replace(urlRegex, function(url) {
-    return `<a href="${url}" target="_blank" style="color:#f5f5f5; text-decoration: underline;">${url}</a>`;
-  });
+  return text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" style="color:#f5f5f5; text-decoration: underline;">${url}</a>`);
 }
 
 async function excluir(event, id) {
@@ -132,24 +67,31 @@ async function carregar() {
     const { data: { session } } = await _supabase.auth.getSession();
     if (!session) { window.location.href = "index.html"; return; }
 
+    // Busca simplificada para diagnóstico
     const { data: itens, error } = await _supabase
       .from('archive')
       .select('*')
-      .eq('category', 'Articles')
-      .eq('user_id', session.user.id)
-      .order('entry_date', { ascending: false });
+      .ilike('category', 'Articles'); // ilike ignora maiúsculas/minúsculas
+
+    console.log("Sessão ativa ID:", session.user.id);
+    console.table(itens); // Veja os dados no Console (F12)
 
     const timeline = document.getElementById("timeline");
 
     if (error) {
-        console.error(error);
+        timeline.innerHTML += `<p>Erro: ${error.message}</p>`;
         return;
     }
 
     if (!itens || itens.length === 0) {
-        timeline.innerHTML += `<p style="opacity:0.3; margin-top: 20px;">No entries found.</p>`;
+        timeline.innerHTML += `<p style="opacity:0.3; margin-top: 20px;">No entries found in DB for 'Articles'.</p>`;
     } else {
-        itens.forEach(item => {
+        // Filtra pelo ID do usuário no lado do cliente para garantir que a RLS não é o problema
+        const filtrados = itens.filter(i => i.user_id === session.user.id);
+        
+        filtrados.sort((a, b) => new Date(b.entry_date) - new Date(a.entry_date));
+
+        filtrados.forEach(item => {
             const div = document.createElement("div");
             div.classList.add("entry");
             div.onclick = () => {
@@ -160,14 +102,13 @@ async function carregar() {
                 <button class="delete-btn" onclick="excluir(event, ${item.id})">×</button>
                 <div class="date">${item.entry_date || ""}</div>
                 <div class="title">${item.title || "Untitled"}</div>
-                ${item.rating ? `<div class="meta">Rating: ${item.rating}/5</div>` : ""}
+                ${item.rating ? `<div class="meta">Rating: ${item.rating}</div>` : ""}
                 ${item.notes ? `<div class="notes">${linkify(item.notes)}</div>` : ""}
             `;
             timeline.appendChild(div);
         });
     }
 }
-
 window.onload = carregar;
 </script>
 </body>
