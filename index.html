@@ -19,64 +19,50 @@
   </style>
 </head>
 <body>
-
   <div class="container">
     <h1>ArchiveOne</h1>
+    
     <p class="secondary-text" id="status-text">Everything you've ever been.</p>
 
-    <div id="login-form" class="login-box">
+    <div id="login-form" class="login-box hidden">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="pass" placeholder="Password">
       <button onclick="entrar()">Login</button>
     </div>
 
-   <div id="archive-link" class="hidden">
-  <nav class="menu">
-    <a href="articles.html" class="secondary-text">Articles</a>
-    <a href="books.html" class="secondary-text">Books</a>
-    <a href="interviews.html" class="secondary-text">Interviews</a>
-    <a href="movies.html" class="secondary-text">Movies</a>
-    <a href="podcasts.html" class="secondary-text">Podcasts</a>
-    <a href="series.html" class="secondary-text">Series</a>
-    <a href="songs.html" class="secondary-text">Songs</a>
-    <a href="tvshows.html" class="secondary-text">TV Shows</a>
-  </nav>
+    <div id="archive-link" class="hidden">
+      <nav class="menu" style="position: static; margin-bottom: 30px;">
+        <a href="articles.html" class="secondary-text">Articles</a>
+        <a href="books.html" class="secondary-text">Books</a>
+        <a href="interviews.html" class="secondary-text">Interviews</a>
+        <a href="movies.html" class="secondary-text">Movies</a>
+        <a href="podcasts.html" class="secondary-text">Podcasts</a>
+        <a href="series.html" class="secondary-text">Series</a>
+        <a href="songs.html" class="secondary-text">Songs</a>
+        <a href="tvshows.html" class="secondary-text">TV Shows</a>
+      </nav>
 
-  <h1>ArchiveOne</h1>
-  <a href="archive.html" class="secondary-text">enter archive</a>
-  <br><br>
-  <a href="#" onclick="sair()" class="secondary-text" style="font-size: 12px;">logout</a>
-</div>
+      <a href="archive.html" class="secondary-text" style="font-size: 24px;">enter archive</a>
+      <br><br>
+      <a href="#" onclick="sair()" class="secondary-text" style="font-size: 12px; opacity: 0.4;">logout</a>
+    </div>
   </div>
 
   <script>
-    // Configuração
     const supabaseUrl = 'https://vnablodqafeqyuxxirnn.supabase.co';
     const supabaseKey = 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR';
     const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // 1. FUNÇÃO PARA LOGAR
     async function entrar() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('pass').value;
-
-      const { data, error } = await _supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-
-      if (error) {
-        alert("Erro: " + error.message);
-      } else {
-        alert("Logado com sucesso!");
-        verificarSessao();
-      }
+      const { error } = await _supabase.auth.signInWithPassword({ email, password });
+      if (error) alert("Erro: " + error.message);
+      else verificarSessao();
     }
 
-    // 2. VERIFICAR SE ESTÁ LOGADO
     async function verificarSessao() {
       const { data: { session } } = await _supabase.auth.getSession();
-      
       const loginForm = document.getElementById('login-form');
       const archiveLink = document.getElementById('archive-link');
       const statusText = document.getElementById('status-text');
@@ -88,16 +74,15 @@
       } else {
         loginForm.classList.remove('hidden');
         archiveLink.classList.add('hidden');
+        statusText.innerText = "Everything you've ever been.";
       }
     }
 
-    // 3. LOGOUT
     async function sair() {
       await _supabase.auth.signOut();
       location.reload();
     }
 
-    // Executa ao abrir a página
     window.onload = verificarSessao;
   </script>
 </body>
