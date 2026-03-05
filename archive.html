@@ -100,7 +100,9 @@ function salvar() {
     }
 
     // Salva o array completo de volta
-    localStorage.setItem("archive", JSON.stringify(dadosExistentes));
+   const { data, error } = await supabase
+  .from('archive')
+  .insert([{ id: Date.now(), title, category, date, rating, notes, user_id: session.user.id }]);
     localStorage.removeItem("editando");
 
     alert("Saved successfully!");
