@@ -1,70 +1,104 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>New Entry | ArchiveOne</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { background-color: #0a0a0a; color: #f5f5f5; font-family: 'Inter', Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .box { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
-        h2 { font-weight: 400; font-size: 24px; margin-bottom: 10px; }
-        input, select, textarea { background: transparent; border: 1px solid #333; color: #fff; padding: 12px; outline: none; font-family: inherit; font-size: 14px; width: 100%; box-sizing: border-box; }
-        select option { background-color: #0a0a0a; color: #f5f5f5; }
-        button { padding: 12px; cursor: pointer; border: none; font-weight: bold; font-family: inherit; font-size: 14px; transition: 0.2s; }
-        .save { background: #f5f5f5; color: #0a0a0a; text-transform: uppercase; letter-spacing: 1px; }
-        .back { background: transparent; color: #f5f5f5; border: 1px solid #333; margin-top: 5px; }
-        textarea { height: 100px; resize: none; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Archive | ArchiveOne</title>
+  <style>
+    body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    .container { width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+    
+    input, textarea, select { 
+      background: #1a1a1a; border: 1px solid #333; color: #f5f5f5; padding: 12px; border-radius: 4px; font-size: 14px; outline: none;
+    }
+
+    button { 
+      background: #f5f5f5; color: #0a0a0a; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px;
+    }
+
+    .back { position: fixed; bottom: 30px; left: 30px; color: #f5f5f5; text-decoration: none; opacity: 0.5; font-size: 16px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="box">
-        <h2>New Entry</h2>
-        <input type="text" id="title" placeholder="Title">
-        <select id="category">
-            <option value="Articles">Articles</option>
-            <option value="Books">Books</option>
-            <option value="Interviews">Interviews</option>
-            <option value="Movies">Movies</option>
-            <option value="Podcasts">Podcasts</option>
-            <option value="Series">Series</option>
-            <option value="Songs">Songs</option>
-            <option value="TV Shows">TV Shows</option>
-        </select>
-        <input type="date" id="date">
-        <select id="rating">
-            <option value="">Rating</option>
-            <option value="1">1/5</option>
-            <option value="2">2/5</option>
-            <option value="3">3/5</option>
-            <option value="4">4/5</option>
-            <option value="5">5/5</option>
-        </select>
-        <textarea id="notes" placeholder="Notes"></textarea>
-        <button class="save" onclick="salvar()">Add to Archive</button>
-        <button class="back" onclick="window.location.href='index.html'">Back</button>
-    </div>
 
-    <script>
-        const _supabase = supabase.createClient('https://vnablodqafeqyuxxirnn.supabase.co', 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR');
+  <div class="container">
+    <h2 id="page-title" style="font-weight: 400; text-align: center;">New Entry</h2>
+    
+    <input type="text" id="title" placeholder="Title">
+    <select id="category">
+      <option value="Articles">Articles</option>
+      <option value="Books">Books</option>
+      <option value="Interviews">Interviews</option>
+      <option value="Movies">Movies</option>
+      <option value="Podcasts">Podcasts</option>
+      <option value="Series">Series</option>
+      <option value="Songs">Songs</option>
+      <option value="TV Shows">TV Shows</option>
+    </select>
+    <input type="date" id="entry_date">
+    <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5">
+    <textarea id="notes" placeholder="Notes" rows="4"></textarea>
+    
+    <button onclick="salvar()">Save</button>
+  </div>
 
-        async function salvar() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) return alert("Login required");
+  <a href="javascript:history.back()" class="back">← Back</a>
 
-            const payload = {
-                id: Date.now(),
-                user_id: session.user.id,
-                title: document.getElementById("title").value,
-                category: document.getElementById("category").value,
-                entry_date: document.getElementById("date").value,
-                rating: document.getElementById("rating").value ? parseInt(document.getElementById("rating").value) : null,
-                notes: document.getElementById("notes").value
-            };
+<script>
+const supabaseUrl = 'https://vnablodqafeqyuxxirnn.supabase.co';
+const supabaseKey = 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR';
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-            const { error } = await _supabase.from('archive').insert([payload]);
-            if (error) alert(error.message);
-            else window.location.href = payload.category.toLowerCase().replace(/\s/g, "") + ".html";
+const editId = localStorage.getItem("editando");
+
+async function carregarDados() {
+    if (editId) {
+        document.getElementById("page-title").innerText = "Edit Entry";
+        const { data, error } = await _supabase.from('archive').select('*').eq('id', editId).single();
+        
+        if (data) {
+            document.getElementById("title").value = data.title || "";
+            document.getElementById("category").value = data.category || "Articles";
+            document.getElementById("entry_date").value = data.entry_date || "";
+            document.getElementById("rating").value = data.rating || "";
+            document.getElementById("notes").value = data.notes || "";
         }
-    </script>
+    }
+}
+
+async function salvar() {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (!session) return;
+
+    const payload = {
+        title: document.getElementById("title").value,
+        category: document.getElementById("category").value,
+        entry_date: document.getElementById("entry_date").value,
+        rating: document.getElementById("rating").value,
+        notes: document.getElementById("notes").value,
+        user_id: session.user.id
+    };
+
+    let error;
+    if (editId) {
+        // Atualiza o existente
+        const { error: err } = await _supabase.from('archive').update(payload).eq('id', editId);
+        error = err;
+    } else {
+        // Cria novo
+        const { error: err } = await _supabase.from('archive').insert([payload]);
+        error = err;
+    }
+
+    if (error) alert(error.message);
+    else {
+        localStorage.removeItem("editando");
+        window.location.href = payload.category.toLowerCase().replace(" ", "") + ".html";
+    }
+}
+
+window.onload = carregarDados;
+</script>
 </body>
 </html>
