@@ -5,39 +5,29 @@
   <title>ArchiveOne</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body {
-      margin: 0;
-      background-color: #0a0a0a;
-      color: #f5f5f5;
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
+    /* ===== CSS ORIGINAL (SEM ALTERAÇÕES DE DESIGN) ===== */
+    body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; height: 100vh; }
+    
+    .menu {
+      position: absolute;
+      top: 30px;
+      width: 100%;
       display: flex;
       justify-content: center;
-      align-items: center;
+      gap: 60px;
+      z-index: 1000;
     }
 
     .container {
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 48px;
-      letter-spacing: 2px;
-      margin: 0;
-    }
-
-    .menu {
+      height: 100vh;
       display: flex;
       justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+      align-items: center;
+      flex-direction: column;
     }
+
+    h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
 
     .secondary-text {
       font-size: 16px;
@@ -50,45 +40,30 @@
 
     .secondary-text:hover { opacity: 1; }
 
-    .login-box {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      width: 250px;
-    }
-
-    input {
-      background: transparent;
-      border: 1px solid #333;
-      color: #fff;
-      padding: 12px;
-      outline: none;
-    }
-
-    button {
-      background: #f5f5f5;
-      color: #0a0a0a;
-      border: none;
-      padding: 12px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-
-    button:hover { background: #ccc; }
-
-    .hidden { display: none !important; }
+    /* Estilo funcional para o Login */
+    .login-box { display: flex; flex-direction: column; gap: 15px; width: 250px; margin-top: 20px; }
+    input { background: transparent; border: 1px solid #333; color: #fff; padding: 10px; outline: none; }
+    button { background: #f5f5f5; color: #0a0a0a; border: none; padding: 10px; font-weight: bold; cursor: pointer; }
     
-    #status-text { margin-bottom: 10px; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
+  <nav class="menu">
+    <a href="articles.html" class="secondary-text">Articles</a>
+    <a href="books.html" class="secondary-text">Books</a>
+    <a href="interviews.html" class="secondary-text">Interviews</a>
+    <a href="movies.html" class="secondary-text">Movies</a>
+    <a href="podcasts.html" class="secondary-text">Podcasts</a>
+    <a href="series.html" class="secondary-text">Series</a>
+    <a href="songs.html" class="secondary-text">Songs</a>
+    <a href="tvshows.html" class="secondary-text">TV Shows</a>
+  </nav>
+
   <div class="container">
-    <div id="header-area">
-        <h1>ArchiveOne</h1>
-        <p class="secondary-text" id="status-text">Everything you've ever been.</p>
-    </div>
+    <h1>ArchiveOne</h1>
+    <p class="secondary-text" id="status-text">Everything you've ever been.</p>
 
     <div id="login-form" class="login-box hidden">
       <input type="email" id="email" placeholder="Email">
@@ -96,25 +71,9 @@
       <button onclick="entrar()">Login</button>
     </div>
 
-    <div id="logged-content" class="hidden">
-      <nav class="menu">
-        <a href="articles.html" class="secondary-text">Articles</a>
-        <a href="books.html" class="secondary-text">Books</a>
-        <a href="interviews.html" class="secondary-text">Interviews</a>
-        <a href="movies.html" class="secondary-text">Movies</a>
-        <a href="podcasts.html" class="secondary-text">Podcasts</a>
-        <a href="series.html" class="secondary-text">Series</a>
-        <a href="songs.html" class="secondary-text">Songs</a>
-        <a href="tvshows.html" class="secondary-text">TV Shows</a>
-      </nav>
-      
-      <div style="margin-top: 40px;">
-        <a href="archive.html" class="secondary-text" style="font-size: 20px; border: 1px solid #333; padding: 10px 20px;">enter archive</a>
-      </div>
-      
-      <div style="margin-top: 60px;">
-        <a href="#" onclick="sair()" class="secondary-text" style="font-size: 12px; opacity: 0.3;">logout</a>
-      </div>
+    <div id="archive-links" class="hidden">
+      <a href="archive.html" class="secondary-text">enter archive</a>
+      <p onclick="sair()" class="secondary-text" style="font-size: 10px; margin-top: 40px; opacity: 0.2; cursor: pointer;">logout</p>
     </div>
   </div>
 
@@ -125,17 +84,18 @@
 
     async function verificarSessao() {
       const { data: { session } } = await _supabase.auth.getSession();
+      
       const loginForm = document.getElementById('login-form');
-      const loggedContent = document.getElementById('logged-content');
+      const archiveLinks = document.getElementById('archive-links');
       const statusText = document.getElementById('status-text');
 
       if (session) {
+        archiveLinks.classList.remove('hidden');
         loginForm.classList.add('hidden');
-        loggedContent.classList.remove('hidden');
         statusText.innerText = "Welcome back, " + session.user.email;
       } else {
+        archiveLinks.classList.add('hidden');
         loginForm.classList.remove('hidden');
-        loggedContent.classList.add('hidden');
         statusText.innerText = "Everything you've ever been.";
       }
     }
