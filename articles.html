@@ -50,10 +50,10 @@
 
     h2 { 
       font-weight: 400; 
-      font-size: 32px;
-      letter-spacing: 1px;
+      font-size: 48px;
+      letter-spacing: 2px;
       margin-bottom: 30px;
-      opacity: 0.9;
+      opacity: 1;
     }
 
     .entry { 
@@ -147,7 +147,7 @@ async function carregar() {
     }
 
     if (!itens || itens.length === 0) {
-        timeline.innerHTML += `<p style="opacity:0.5;">No articles found.</p>`;
+        timeline.innerHTML += `<p style="opacity:0.3; margin-top: 20px;">No entries found.</p>`;
     } else {
         itens.forEach(item => {
             const div = document.createElement("div");
