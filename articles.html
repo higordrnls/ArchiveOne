@@ -32,6 +32,16 @@
     .entry { text-align: left; position: relative; border-left: 1px solid #444; padding: 15px; opacity: 0.8; cursor: pointer; transition: background 0.3s ease; margin-bottom: 15px; }
     .entry:hover { background: #1a1a1a; }
     
+    /* BOTÃO EXCLUIR */
+    .delete-btn { 
+      position: absolute; top: 10px; right: 10px; 
+      background: none; border: none; color: #f5f5f5; 
+      font-size: 18px; opacity: 0; cursor: pointer; 
+      transition: opacity 0.3s ease; z-index: 10; 
+    }
+    .entry:hover .delete-btn { opacity: 0.6; }
+    .delete-btn:hover { opacity: 1 !important; color: #ff4444; }
+
     .date { font-size: 12px; opacity: 0.5; }
     .title { font-size: 18px; margin-top: 5px; font-weight: bold; }
     .notes { font-size: 14px; opacity: 0.7; margin-top: 8px; line-height: 1.4; }
@@ -66,6 +76,15 @@ const supabaseUrl = 'https://vnablodqafeqyuxxirnn.supabase.co';
 const supabaseKey = 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+async function excluir(event, id) {
+  event.stopPropagation(); 
+  if (confirm("Deseja realmente excluir este item?")) {
+    const { error } = await _supabase.from('archive').delete().eq('id', id);
+    if (error) alert(error.message);
+    else location.reload();
+  }
+}
+
 async function carregar() {
     const { data: itens, error } = await _supabase
       .from('archive')
@@ -80,11 +99,11 @@ async function carregar() {
             const div = document.createElement("div");
             div.classList.add("entry");
             div.onclick = () => {
-                // Define o ID para edição antes de redirecionar
                 localStorage.setItem("editando", item.id);
                 window.location.href = "archive.html";
             };
             div.innerHTML = `
+                <button class="delete-btn" onclick="excluir(event, ${item.id})">×</button>
                 <div class="date">${item.entry_date || ""}</div>
                 <div class="title">${item.title || "Untitled"}</div>
                 ${item.notes ? `<div class="notes">${item.notes}</div>` : ""}
