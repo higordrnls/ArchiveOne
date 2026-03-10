@@ -154,12 +154,15 @@
       timelineArea.scrollLeft = scrollLeft - walk;
     });
 
-    // ZOOM NO SCROLL (SEM CTRL)
+    // ZOOM NO SCROLL (TRAVADO)
     timelineArea.addEventListener('wheel', (e) => {
       e.preventDefault();
       const zoomSpeed = 0.5;
       currentZoom += e.deltaY * -zoomSpeed;
+      
+      // TRAVA DE SEGURANÇA: Minimo 60px (Anos), Máximo 1200px (Dias)
       currentZoom = Math.min(Math.max(60, currentZoom), 1200);
+      
       document.getElementById('timeline-content').style.setProperty('--timeline-gap', currentZoom + 'px');
       renderTimelineItems();
     }, { passive: false });
@@ -195,13 +198,17 @@
       let html = '';
       const hoje = new Date();
 
+      // VISÃO ANOS (ZOOM < 400)
       if (currentZoom < 400) {
         for (let i = -3; i <= 1; i++) {
           const ano = hoje.getFullYear() + i;
           html += `<div class="timeline-node" onclick="selectNode(this)"><div class="node-dot"></div><span class="node-year">${ano}</span></div>`;
         }
-      } else {
-        for (let i = -30; i <= 5; i++) {
+      } 
+      // VISÃO DIAS (ZOOM >= 400)
+      else {
+        // Range de 50 dias para garantir que a linha não acabe
+        for (let i = -40; i <= 10; i++) {
           const d = new Date(); d.setDate(hoje.getDate() + i);
           const iso = d.toISOString().split('T')[0];
           const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
