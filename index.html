@@ -5,8 +5,9 @@
   <title>ArchiveOne</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; height: 100vh; }
+    body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; height: 100vh; overflow: hidden; }
     
+    /* MENU SUPERIOR ORIGINAL */
     .menu {
       position: absolute;
       top: 30px;
@@ -17,6 +18,28 @@
       z-index: 1000;
     }
 
+    /* PERFIL NO CANTO SUPERIOR DIREITO */
+    .profile-trigger {
+      position: absolute; top: 25px; right: 30px; cursor: pointer; z-index: 1100;
+      width: 40px; height: 40px; border-radius: 50%; overflow: hidden;
+      border: 1px solid #333; display: flex; align-items: center; justify-content: center; background: #1a1a1a;
+      transition: border-color 0.3s;
+    }
+    .profile-trigger:hover { border-color: #f5f5f5; }
+    .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-trigger svg { width: 22px; height: 22px; fill: #666; }
+
+    /* MODAL DE DADOS (DROPDOWN) */
+    .profile-modal {
+      position: fixed; top: 75px; right: 30px; width: 280px; background: #0f0f0f; border: 1px solid #333;
+      padding: 20px; display: none; flex-direction: column; gap: 12px; z-index: 1050; text-align: left;
+    }
+    .profile-modal.active { display: flex; }
+    .profile-modal h3 { margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase; opacity: 0.4; letter-spacing: 1px; }
+    .profile-modal input { background: transparent; border: none; border-bottom: 1px solid #222; color: #fff; padding: 8px 0; font-size: 13px; outline: none; }
+    .profile-modal input:focus { border-bottom-color: #f5f5f5; }
+
+    /* CONTAINER CENTRAL ORIGINAL */
     .container {
       text-align: center;
       height: 100vh;
@@ -36,34 +59,20 @@
       text-decoration: none;
       transition: opacity 0.3s ease;
     }
-
     .secondary-text:hover { opacity: 1; }
 
     .login-box { display: flex; flex-direction: column; gap: 15px; width: 250px; margin-top: 20px; }
     
-    input { background: transparent; border: 1px solid #333; color: #fff; padding: 10px; outline: none; font-size: 14px; }
-    input:focus { border-color: #666; }
-
-    /* ESTILO ÚNICO PARA BOTÕES (LOGIN E REGISTER) */
+    /* BOTÕES PADRONIZADOS */
     .btn-style { 
-      background: #f5f5f5; 
-      color: #0a0a0a; 
-      border: none; 
-      padding: 12px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      text-transform: uppercase; 
-      letter-spacing: 1px;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 14px;
-      transition: opacity 0.3s; 
+      background: #f5f5f5; color: #0a0a0a; border: none; padding: 12px; font-weight: bold; 
+      cursor: pointer; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; 
+      display: inline-block; font-size: 14px; transition: opacity 0.3s; 
     }
-    .btn-style:hover { opacity: 0.9; }
+    .btn-logout { background: #333; color: #fff; margin-top: 10px; font-size: 11px; padding: 10px; }
+    .btn-logout:hover { background: #ff4444; }
 
     .hidden { display: none !important; }
-    
-    #logout-btn { margin-top: 20px; width: 120px; }
   </style>
 </head>
 <body>
@@ -79,38 +88,62 @@
     <a href="tvshows.html" class="secondary-text">TV Shows</a>
   </nav>
 
+  <div id="profile-area" class="hidden">
+    <div class="profile-trigger" onclick="toggleProfile()">
+      <div id="user-photo">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+    </div>
+
+    <div class="profile-modal" id="profile-modal">
+      <h3>Personal Data</h3>
+      <input type="text" id="p-nome" placeholder="Full Name">
+      <input type="text" id="p-cpf" placeholder="CPF">
+      <input type="date" id="p-nasc" title="Birth Date">
+      <input type="tel" id="p-tel" placeholder="Phone">
+      <input type="email" id="p-email" placeholder="Email" disabled title="Email cannot be changed here">
+      <button class="btn-style" style="font-size: 11px; margin-top: 10px;">Update Profile</button>
+      <button onclick="sair()" class="btn-style btn-logout">LOGOUT</button>
+    </div>
+  </div>
+
   <div class="container">
     <h1>ArchiveOne</h1>
     <p class="secondary-text" id="status-text">Everything you've ever been.</p>
 
     <div id="login-form" class="login-box hidden">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="pass" placeholder="Password">
+      <input type="email" id="email" placeholder="Email" style="background: transparent; border: 1px solid #333; color: #fff; padding: 10px; outline: none;">
+      <input type="password" id="pass" placeholder="Password" style="background: transparent; border: 1px solid #333; color: #fff; padding: 10px; outline: none;">
       <button class="btn-style" onclick="entrar()">Login</button>
       <a href="register.html" class="btn-style" style="margin-top: 5px;">Register</a>
     </div>
 
     <div id="archive-links" class="hidden">
       <a href="archive.html" class="secondary-text">enter archive</a>
-      <div style="margin-top: 40px;">
-        <button onclick="sair()" id="logout-btn" class="btn-style">LOGOUT</button>
       </div>
-    </div>
   </div>
 
   <script>
     const _supabase = supabase.createClient('https://vnablodqafeqyuxxirnn.supabase.co', 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR');
 
+    function toggleProfile() {
+      document.getElementById('profile-modal').classList.toggle('active');
+    }
+
     async function verificarSessao() {
       const { data: { session } } = await _supabase.auth.getSession();
       const loginForm = document.getElementById('login-form');
       const archiveLinks = document.getElementById('archive-links');
+      const profileArea = document.getElementById('profile-area');
 
       if (session) {
         archiveLinks.classList.remove('hidden');
+        profileArea.classList.remove('hidden');
         loginForm.classList.add('hidden');
+        document.getElementById('p-email').value = session.user.email;
       } else {
         archiveLinks.classList.add('hidden');
+        profileArea.classList.add('hidden');
         loginForm.classList.remove('hidden');
       }
     }
@@ -126,6 +159,15 @@
     async function sair() {
       await _supabase.auth.signOut();
       location.reload();
+    }
+
+    // Fecha o modal se clicar fora dele
+    window.onclick = function(event) {
+      const modal = document.getElementById('profile-modal');
+      const trigger = document.querySelector('.profile-trigger');
+      if (!modal.contains(event.target) && !trigger.contains(event.target)) {
+        modal.classList.remove('active');
+      }
     }
 
     window.onload = verificarSessao;
