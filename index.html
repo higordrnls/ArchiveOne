@@ -6,11 +6,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; height: 100vh; overflow: hidden; }
+    
+    /* MENU SUPERIOR */
     .menu { position: absolute; top: 30px; width: 100%; display: flex; justify-content: center; gap: 60px; z-index: 1000; }
-    
-    /* PERFIL TOPO DIREITA */
+
+    /* ÁREA DE PERFIL (LOGADO) */
     .profile-area { position: absolute; top: 25px; right: 30px; z-index: 1100; display: flex; align-items: center; gap: 15px; }
-    
     .icon-btn { cursor: pointer; opacity: 0.6; transition: opacity 0.3s; display: flex; align-items: center; }
     .icon-btn:hover { opacity: 1; }
     .icon-btn svg { width: 20px; fill: #f5f5f5; }
@@ -20,8 +21,8 @@
       display: flex; align-items: center; justify-content: center; background: #1a1a1a; cursor: pointer; overflow: hidden;
     }
     .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
-    .profile-trigger svg { width: 22px; height: 22px; fill: #666; }
-    
+
+    /* MODAL DE DADOS */
     .profile-modal {
       position: absolute; top: 55px; right: 0; width: 280px; background: #0f0f0f; border: 1px solid #333;
       padding: 25px; display: none; flex-direction: column; gap: 12px; text-align: left;
@@ -31,12 +32,25 @@
     .profile-modal input { background: transparent; border: none; border-bottom: 1px solid #222; color: #fff; padding: 8px 0; font-size: 13px; outline: none; width: 100%; }
     .profile-modal input:focus { border-bottom-color: #f5f5f5; }
 
+    /* CONTAINER CENTRAL */
     .container { text-align: center; height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; }
     h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
+    
     .secondary-text { font-size: 16px; opacity: 0.6; color: #f5f5f5; letter-spacing: 0.5px; text-decoration: none; transition: opacity 0.3s ease; }
+    .secondary-text:hover { opacity: 1; }
 
-    .btn-style { background: #f5f5f5; color: #0a0a0a; border: none; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; display: inline-block; font-size: 14px; text-align: center; width: 100%; box-sizing: border-box; }
-    .btn-logout { background: #333; color: #fff; font-size: 11px; padding: 10px; margin-top: 5px; }
+    /* FORMULÁRIO DE LOGIN (FIX) */
+    .login-box { display: flex; flex-direction: column; gap: 15px; width: 250px; margin-top: 20px; }
+    
+    /* Voltando para o fundo transparente das imagens 1 e 7 */
+    .login-box input { background: transparent !important; border: 1px solid #333; color: #fff; padding: 10px; outline: none; font-size: 14px; }
+    .login-box input:focus { border-color: #666; }
+
+    .btn-login { background: #f5f5f5; color: #0a0a0a; border: none; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; width: 100%; }
+    
+    /* Botão Register transparente como na imagem 7 */
+    .btn-register { background: transparent; color: #f5f5f5; border: 1px solid #333; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; display: inline-block; font-size: 14px; margin-top: 5px; }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -54,10 +68,8 @@
   </nav>
 
   <div id="user-area" class="profile-area hidden">
-    <div class="icon-btn" onclick="compartilhar()">
-        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
-    </div>
-
+    <div class="icon-btn" onclick="compartilhar()"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg></div>
+    
     <div class="icon-btn" onclick="document.getElementById('profile-modal').classList.toggle('active')">
         <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
     </div>
@@ -65,7 +77,7 @@
     <input type="file" id="file-upload" accept="image/*" class="hidden" onchange="uploadFoto(this)">
     <div class="profile-trigger" onclick="document.getElementById('file-upload').click()">
         <div id="avatar-container">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <svg viewBox="0 0 24 24" style="width:22px; fill:#666;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
     </div>
     
@@ -78,21 +90,22 @@
         <input type="email" id="prof-email" placeholder="Email" disabled>
         <input type="password" id="prof-new-pass" placeholder="New Password">
         <input type="password" id="prof-confirm-pass" placeholder="Confirm New Password">
-        
-        <button class="btn-style" style="font-size: 11px; margin-top: 10px;" onclick="salvarTudo()">Update Profile</button>
-        <button onclick="sair()" class="btn-style btn-logout">LOGOUT</button>
+        <button class="btn-login" style="font-size: 11px; margin-top: 10px;" onclick="salvarTudo()">Update Profile</button>
+        <button onclick="sair()" class="btn-register" style="width:100%; font-size: 11px; background:#333;">LOGOUT</button>
     </div>
   </div>
 
   <div class="container">
     <h1>ArchiveOne</h1>
     <p class="secondary-text">Everything you've ever been.</p>
-    <div id="login-form" class="hidden" style="width: 250px; display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+
+    <div id="login-form" class="login-box hidden">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="pass" placeholder="Password">
-      <button class="btn-style" onclick="entrar()">Login</button>
-      <a href="register.html" class="btn-style" style="margin-top: 5px; background: transparent; color: #fff; border: 1px solid #333;">Register</a>
+      <button class="btn-login" onclick="entrar()">Login</button>
+      <a href="register.html" class="btn-register">Register</a>
     </div>
+
     <div id="archive-links" class="hidden">
       <a href="archive.html" class="secondary-text">enter archive</a>
     </div>
@@ -111,18 +124,17 @@
         carregarDadosPerfil(session.user.id);
       } else {
         document.getElementById('login-form').classList.remove('hidden');
-        document.getElementById('login-form').style.display = 'flex';
       }
     }
 
     async function carregarDadosPerfil(userId) {
       const { data } = await _supabase.from('profiles').select('*').eq('id', userId).single();
-      if (data) {
+      if (data && data.avatar_url) {
+        document.getElementById('avatar-container').innerHTML = `<img src="${data.avatar_url}?t=${new Date().getTime()}">`;
         document.getElementById('prof-name').value = data.full_name || '';
         document.getElementById('prof-cpf').value = data.cpf || '';
         document.getElementById('prof-birth').value = data.birth_date || '';
         document.getElementById('prof-phone').value = data.phone || '';
-        if(data.avatar_url) document.getElementById('avatar-container').innerHTML = `<img src="${data.avatar_url}?t=${new Date().getTime()}">`;
       }
     }
 
@@ -130,13 +142,10 @@
       const file = input.files[0];
       if (!file) return;
       const { data: { session } } = await _supabase.auth.getSession();
-      const fileName = `${session.user.id}`;
-      
-      const { error } = await _supabase.storage.from('avatars').upload(fileName, file, { upsert: true });
-      
+      const { error } = await _supabase.storage.from('avatars').upload(session.user.id, file, { upsert: true });
       if (error) alert("Erro: " + error.message);
       else {
-        const { data: urlData } = _supabase.storage.from('avatars').getPublicUrl(fileName);
+        const { data: urlData } = _supabase.storage.from('avatars').getPublicUrl(session.user.id);
         await _supabase.from('profiles').upsert({ id: session.user.id, avatar_url: urlData.publicUrl });
         location.reload();
       }
@@ -145,36 +154,19 @@
     async function salvarTudo() {
       const { data: { session } } = await _supabase.auth.getSession();
       const newPass = document.getElementById('prof-new-pass').value;
-      const confirmPass = document.getElementById('prof-confirm-pass').value;
-
-      if (newPass && newPass !== confirmPass) {
-        alert("As senhas não coincidem!");
-        return;
-      }
-
-      const updates = {
+      if (newPass && newPass !== document.getElementById('prof-confirm-pass').value) return alert("Senhas não coincidem!");
+      
+      await _supabase.from('profiles').upsert({
         id: session.user.id,
         full_name: document.getElementById('prof-name').value,
         cpf: document.getElementById('prof-cpf').value,
         birth_date: document.getElementById('prof-birth').value,
         phone: document.getElementById('prof-phone').value,
-      };
-      await _supabase.from('profiles').upsert(updates);
+      });
 
-      if (newPass) {
-        await _supabase.auth.updateUser({ password: newPass });
-      }
-
+      if (newPass) await _supabase.auth.updateUser({ password: newPass });
       alert("Perfil atualizado!");
       location.reload();
-    }
-
-    function compartilhar() {
-        if (navigator.share) {
-            navigator.share({ title: 'ArchiveOne', url: window.location.href });
-        } else {
-            alert("URL copiada: " + window.location.href);
-        }
     }
 
     async function entrar() {
@@ -185,6 +177,7 @@
       if (error) alert(error.message); else verificarSessao();
     }
 
+    function compartilhar() { navigator.share ? navigator.share({title:'ArchiveOne', url:window.location.href}) : alert("Link: "+window.location.href); }
     async function sair() { await _supabase.auth.signOut(); location.reload(); }
     window.onload = verificarSessao;
   </script>
