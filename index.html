@@ -28,6 +28,7 @@
 
     /* TIMELINE */
     .timeline-wrapper { position: absolute; bottom: 85px; width: 100%; overflow-x: auto; padding: 30px 0; white-space: nowrap; scrollbar-width: none; z-index: 500; cursor: grab; user-select: none; }
+    .timeline-wrapper:active { cursor: grabbing; }
     .timeline-wrapper::-webkit-scrollbar { display: none; }
     .timeline-line { position: absolute; top: 50%; left: 0; width: 10000px; height: 1px; background: rgba(245, 245, 245, 0.1); z-index: 1; }
     .timeline-items { display: inline-flex; gap: var(--timeline-gap, 120px); padding: 0 50vw; position: relative; z-index: 2; transition: gap 0.1s ease-out; }
@@ -45,7 +46,6 @@
       flex-direction: column; gap: 6px; pointer-events: none; text-align: left;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    /* LINHA CONECTORA */
     .info-card::after { content: ''; position: absolute; bottom: -40px; left: 50%; width: 1px; height: 40px; background: #f5f5f5; opacity: 0.4; }
     
     .timeline-node.active .info-card { display: flex; }
@@ -80,8 +80,29 @@
     const _supabase = supabase.createClient('https://vnablodqafeqyuxxirnn.supabase.co', 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR');
     let currentZoom = 120;
     let logsByDate = {}; 
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
     const timelineArea = document.getElementById('timeline-area');
+
+    // ARRASTAR
+    timelineArea.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - timelineArea.offsetLeft;
+      scrollLeft = timelineArea.scrollLeft;
+    });
+    timelineArea.addEventListener('mouseleave', () => isDown = false);
+    timelineArea.addEventListener('mouseup', () => isDown = false);
+    timelineArea.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - timelineArea.offsetLeft;
+      const walk = (x - startX) * 2;
+      timelineArea.scrollLeft = scrollLeft - walk;
+    });
+
+    // ZOOM
     timelineArea.addEventListener('wheel', (e) => {
       e.preventDefault();
       currentZoom = Math.min(Math.max(60, currentZoom + e.deltaY * -0.5), 1200);
@@ -120,7 +141,6 @@
         for (let i = -3; i <= 1; i++) {
           const ano = hoje.getFullYear() + i;
           html += `<div class="timeline-node" onclick="selectNode(this)">
-            <div class="info-card"><span class="card-title">${ano}</span><span class="card-item">Visão anual do arquivo.</span></div>
             <div class="node-dot"></div><span class="node-year">${ano}</span>
           </div>`;
         }
