@@ -7,12 +7,10 @@
   <style>
     body { margin: 0; background-color: #0a0a0a; color: #f5f5f5; font-family: Arial, Helvetica, sans-serif; height: 100vh; overflow: hidden; }
     
-    /* MENU SUPERIOR */
     .menu { position: absolute; top: 30px; width: 100%; display: flex; justify-content: center; gap: 40px; z-index: 1000; }
-    .menu a { font-size: 14px; text-decoration: none; color: #f5f5f5; opacity: 0.6; transition: opacity 0.3s ease; }
+    .menu a { font-size: 14px; text-decoration: none; color: #f5f5f5; opacity: 0.6; transition: opacity 0.3s; }
     .menu a:hover { opacity: 1; }
 
-    /* ÁREA DE PERFIL */
     .profile-area { position: absolute; top: 25px; right: 30px; z-index: 1100; display: flex; align-items: center; gap: 15px; }
     .icon-btn { cursor: pointer; opacity: 0.6; transition: opacity 0.3s; display: flex; align-items: center; }
     .icon-btn:hover { opacity: 1; }
@@ -24,125 +22,52 @@
     }
     .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-    .profile-modal {
-      position: absolute; top: 55px; right: 0; width: 280px; background: #0f0f0f; border: 1px solid #333;
-      padding: 25px; display: none; flex-direction: column; gap: 12px; text-align: left;
-    }
-    .profile-modal.active { display: flex; }
-    .profile-modal h3 { margin: 0; font-size: 11px; text-transform: uppercase; opacity: 0.4; letter-spacing: 1px; }
-    .profile-modal input { background: transparent; border: none; border-bottom: 1px solid #222; color: #fff; padding: 8px 0; font-size: 13px; outline: none; width: 100%; }
-    .profile-modal input:focus { border-bottom-color: #f5f5f5; }
-
-    /* CONTAINER CENTRAL - AJUSTADO */
-    .container { 
-      text-align: center; height: 100vh; display: flex; 
-      justify-content: flex-start; padding-top: 25vh; /* Descido um pouco mais */
-      align-items: center; flex-direction: column; 
-    }
+    .container { text-align: center; height: 100vh; display: flex; justify-content: flex-start; padding-top: 20vh; align-items: center; flex-direction: column; }
     h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
-    
-    .secondary-text { 
-      font-size: 16px; opacity: 0.6; color: #f5f5f5; letter-spacing: 0.5px; 
-      text-decoration: none; transition: opacity 0.3s ease; 
-    }
-    .secondary-text:hover { opacity: 1; }
-
-    /* LOGIN */
-    .login-box { display: flex; flex-direction: column; gap: 15px; width: 250px; margin-top: 20px; }
-    .login-box input { background: transparent !important; border: 1px solid #333; color: #fff; padding: 10px; outline: none; font-size: 14px; }
-    .btn-login { background: #f5f5f5; color: #0a0a0a; border: none; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; width: 100%; }
-    .btn-register { background: transparent; color: #f5f5f5; border: 1px solid #333; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; display: inline-block; font-size: 14px; margin-top: 5px; text-align: center; }
+    .secondary-text { font-size: 16px; opacity: 0.6; color: #f5f5f5; letter-spacing: 0.5px; text-decoration: none; transition: opacity 0.3s ease; border: none !important; outline: none !important; }
 
     /* TIMELINE */
-    .timeline-wrapper {
-      position: absolute; bottom: 85px; width: 100%;
-      overflow-x: auto; padding: 30px 0; white-space: nowrap;
-      scrollbar-width: none; z-index: 500; cursor: grab; user-select: none;
-    }
-    .timeline-wrapper:active { cursor: grabbing; }
+    .timeline-wrapper { position: absolute; bottom: 85px; width: 100%; overflow-x: auto; padding: 30px 0; white-space: nowrap; scrollbar-width: none; z-index: 500; cursor: grab; user-select: none; }
     .timeline-wrapper::-webkit-scrollbar { display: none; }
     .timeline-line { position: absolute; top: 50%; left: 0; width: 10000px; height: 1px; background: rgba(245, 245, 245, 0.1); z-index: 1; }
-    
-    .timeline-items { 
-      display: inline-flex; gap: var(--timeline-gap, 120px); 
-      padding: 0 50vw; position: relative; z-index: 2; transition: gap 0.1s ease-out; 
-    }
+    .timeline-items { display: inline-flex; gap: var(--timeline-gap, 120px); padding: 0 50vw; position: relative; z-index: 2; transition: gap 0.1s ease-out; }
 
     .timeline-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
     .node-dot { width: 6px; height: 6px; background: #333; border-radius: 50%; margin-bottom: 12px; transition: 0.3s; }
-    .node-year { font-size: 10px; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; text-transform: uppercase; text-align: center; line-height: 1.2; }
+    .node-year { font-size: 10px; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; text-transform: uppercase; text-align: center; }
 
-    .node-dot.has-content { 
-      background: #f5f5f5 !important; 
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); 
-      width: 8px; height: 8px;
-    }
+    .node-dot.has-content { background: #f5f5f5 !important; box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); width: 8px; height: 8px; }
 
-    /* CARD DE INFORMAÇÕES */
+    /* CARD DESIGN */
     .info-card {
-      position: absolute; bottom: 40px; background: #0f0f0f; border: 1px solid #333;
-      padding: 15px; width: 200px; white-space: normal; display: none;
-      flex-direction: column; gap: 8px; pointer-events: none;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: left;
+      position: absolute; bottom: 50px; background: #0f0f0f; border: 1px solid #333;
+      padding: 15px; width: 180px; white-space: normal; display: none;
+      flex-direction: column; gap: 6px; pointer-events: none; text-align: left;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .info-card::after {
-      content: ''; position: absolute; bottom: -30px; left: 50%;
-      width: 1px; height: 30px; background: #f5f5f5; opacity: 0.5;
-    }
+    /* LINHA CONECTORA */
+    .info-card::after { content: ''; position: absolute; bottom: -40px; left: 50%; width: 1px; height: 40px; background: #f5f5f5; opacity: 0.4; }
+    
     .timeline-node.active .info-card { display: flex; }
-    .card-title { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #f5f5f5; margin-bottom: 3px; display: block;}
-    .card-item { font-size: 10px; opacity: 0.6; display: block; margin-bottom: 2px;}
+    .card-title { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #f5f5f5; margin-bottom: 4px; }
+    .card-item { font-size: 10px; opacity: 0.5; display: block; }
 
     .timeline-node.active .node-dot { background: #f5f5f5; transform: scale(1.6); }
     .timeline-node.active .node-year { opacity: 1; font-weight: bold; }
-
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
   <nav class="menu">
-    <a href="articles.html">Articles</a>
-    <a href="books.html">Books</a>
-    <a href="interviews.html">Interviews</a>
-    <a href="movies.html">Movies</a>
-    <a href="podcasts.html">Podcasts</a>
-    <a href="series.html">Series</a>
-    <a href="songs.html">Songs</a>
-    <a href="tvshows.html">TV Shows</a>
+    <a href="articles.html">Articles</a><a href="books.html">Books</a><a href="interviews.html">Interviews</a><a href="movies.html">Movies</a><a href="podcasts.html">Podcasts</a><a href="series.html">Series</a><a href="songs.html">Songs</a><a href="tvshows.html">TV Shows</a>
   </nav>
-
-  <div id="user-area" class="profile-area hidden">
-    <div class="icon-btn" onclick="compartilhar()"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg></div>
-    <div class="icon-btn" onclick="document.getElementById('profile-modal').classList.toggle('active')"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
-    <input type="file" id="file-upload" accept="image/*" class="hidden" onchange="uploadFoto(this)">
-    <div class="profile-trigger" onclick="document.getElementById('file-upload').click()"><div id="avatar-container"><svg viewBox="0 0 24 24" style="width:22px; fill:#666;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div></div>
-    
-    <div class="profile-modal" id="profile-modal">
-        <h3>Personal Data</h3>
-        <input type="text" id="prof-name" placeholder="Full Name">
-        <input type="text" id="prof-cpf" placeholder="CPF">
-        <input type="text" id="prof-birth" placeholder="Data de Nascimento">
-        <input type="tel" id="prof-phone" placeholder="Phone">
-        <input type="email" id="prof-email" placeholder="Email" disabled>
-        <input type="password" id="prof-new-pass" placeholder="New Password">
-        <input type="password" id="prof-confirm-pass" placeholder="Confirm New Password">
-        <button class="btn-login" style="font-size: 11px; margin-top: 10px;" onclick="salvarTudo()">Update Profile</button>
-        <button onclick="sair()" class="btn-register" style="width:100%; font-size: 11px; background:#333;">LOGOUT</button>
-    </div>
-  </div>
 
   <div class="container">
     <h1>ArchiveOne</h1>
     <p class="secondary-text">Everything you've ever been.</p>
-    <div id="login-form" class="login-box hidden">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="pass" placeholder="Password">
-      <button class="btn-login" onclick="entrar()">Login</button>
-      <a href="register.html" class="btn-register">Register</a>
-    </div>
     <div id="archive-links" class="hidden">
-      <a href="archive.html" class="secondary-text" style="margin-top: 20px; display: inline-block; text-decoration: none;">enter archive</a>
+      <a href="archive.html" class="secondary-text" style="margin-top: 20px; display: inline-block;">enter archive</a>
     </div>
   </div>
 
@@ -154,26 +79,12 @@
   <script>
     const _supabase = supabase.createClient('https://vnablodqafeqyuxxirnn.supabase.co', 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR');
     let currentZoom = 120;
-    let userLogs = []; // Lista de datas com conteúdo
-    let logsByDate = {}; // Detalhes por data
+    let logsByDate = {}; 
+
     const timelineArea = document.getElementById('timeline-area');
-
-    // ARRASTAR TIMELINE
-    let isDown = false; let startX; let scrollLeft;
-    timelineArea.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - timelineArea.offsetLeft; scrollLeft = timelineArea.scrollLeft; });
-    timelineArea.addEventListener('mouseleave', () => isDown = false);
-    timelineArea.addEventListener('mouseup', () => isDown = false);
-    timelineArea.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - timelineArea.offsetLeft; const walk = (x - startX) * 2; timelineArea.scrollLeft = scrollLeft - walk; });
-
-    // ZOOM NO SCROLL (TRAVADO)
     timelineArea.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const zoomSpeed = 0.5;
-      currentZoom += e.deltaY * -zoomSpeed;
-      
-      // TRAVA DE SEGURANÇA: Minimo 60px (Anos), Máximo 1200px (Dias)
-      currentZoom = Math.min(Math.max(60, currentZoom), 1200);
-      
+      currentZoom = Math.min(Math.max(60, currentZoom + e.deltaY * -0.5), 1200);
       document.getElementById('timeline-content').style.setProperty('--timeline-gap', currentZoom + 'px');
       renderTimelineItems();
     }, { passive: false });
@@ -182,31 +93,21 @@
       const { data: { session } } = await _supabase.auth.getSession();
       if (session) {
         document.getElementById('archive-links').classList.remove('hidden');
-        document.getElementById('user-area').classList.remove('hidden');
         document.getElementById('timeline-area').classList.remove('hidden');
-        document.getElementById('login-form').classList.add('hidden');
-        document.getElementById('prof-email').value = session.user.email;
-        carregarDadosPerfil(session.user.id);
-        carregarRegistrosTimeline(session.user.id);
-      } else {
-        document.getElementById('login-form').classList.remove('hidden');
+        carregarRegistros(session.user.id);
       }
     }
 
-    async function carregarRegistrosTimeline(userId) {
+    async function carregarRegistros(userId) {
       const tabelas = ['books', 'movies', 'songs', 'articles', 'podcasts', 'series', 'tvshows'];
-      logsByDate = {};
       for (const t of tabelas) {
         const { data } = await _supabase.from(t).select('title, created_at').eq('user_id', userId);
-        if (data) {
-          data.forEach(r => {
-            const date = new Date(r.created_at).toISOString().split('T')[0];
-            if (!logsByDate[date]) logsByDate[date] = [];
-            logsByDate[date].push({ type: t, title: r.title });
-          });
-        }
+        if (data) data.forEach(r => {
+          const d = new Date(r.created_at).toISOString().split('T')[0];
+          if (!logsByDate[d]) logsByDate[d] = [];
+          logsByDate[d].push(r.title);
+        });
       }
-      userLogs = Object.keys(logsByDate);
       renderTimelineItems();
     }
 
@@ -215,39 +116,30 @@
       let html = '';
       const hoje = new Date();
 
-      // VISÃO ANOS (ZOOM < 400)
       if (currentZoom < 400) {
         for (let i = -3; i <= 1; i++) {
           const ano = hoje.getFullYear() + i;
-          html += `<div class="timeline-node" onclick="selectNode(this)"><div class="node-dot"></div><span class="node-year">${ano}</span></div>`;
+          html += `<div class="timeline-node" onclick="selectNode(this)">
+            <div class="info-card"><span class="card-title">${ano}</span><span class="card-item">Visão anual do arquivo.</span></div>
+            <div class="node-dot"></div><span class="node-year">${ano}</span>
+          </div>`;
         }
-      } 
-      // VISÃO DIAS (ZOOM >= 400)
-      else {
-        // Range de 50 dias para garantir que a linha não acabe
-        for (let i = -40; i <= 10; i++) {
+      } else {
+        for (let i = -30; i <= 5; i++) {
           const d = new Date(); d.setDate(hoje.getDate() + i);
           const iso = d.toISOString().split('T')[0];
-          
-          // Formatação correta da data para o card
-          const dataCard = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
           const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
           const items = logsByDate[iso] || [];
           
-          let cardHtml = '';
-          if (items.length > 0) {
-            cardHtml = `<div class="info-card">
-              <span class="card-title">${dataCard}</span>
-              ${items.slice(0, 3).map(it => `<span class="card-item">• ${it.title}</span>`).join('')}
-              ${items.length > 3 ? `<span class="card-item" style="opacity:0.4">+${items.length-3} more</span>` : ''}
-            </div>`;
-          }
+          let cardHtml = `<div class="info-card">
+            <span class="card-title">${d.toLocaleDateString('pt-BR')}</span>
+            ${items.length > 0 ? items.slice(0,3).map(t => `<span class="card-item">• ${t}</span>`).join('') : '<span class="card-item">Nenhum registro.</span>'}
+          </div>`;
 
           html += `<div class="timeline-node ${i === 0 ? 'active' : ''}" onclick="selectNode(this)">
-                    ${cardHtml}
-                    <div class="node-dot ${items.length > 0 ? 'has-content' : ''}"></div>
-                    <span class="node-year">${label}${i === 0 ? '<br>HOJE' : ''}</span>
-                  </div>`;
+            ${cardHtml}<div class="node-dot ${items.length > 0 ? 'has-content' : ''}"></div>
+            <span class="node-year">${label}</span>
+          </div>`;
         }
       }
       container.innerHTML = html;
@@ -258,27 +150,6 @@
       el.classList.add('active');
     }
 
-    async function carregarDadosPerfil(userId) {
-      const { data } = await _supabase.from('profiles').select('*').eq('id', userId).single();
-      if (data && data.avatar_url) document.getElementById('avatar-container').innerHTML = `<img src="${data.avatar_url}?t=${new Date().getTime()}">`;
-    }
-
-    async function uploadFoto(input) {
-      const file = input.files[0]; if (!file) return;
-      const { data: { session } } = await _supabase.auth.getSession();
-      await _supabase.storage.from('avatars').upload(session.user.id, file, { upsert: true });
-      const { data: urlData } = _supabase.storage.from('avatars').getPublicUrl(session.user.id);
-      await _supabase.from('profiles').upsert({ id: session.user.id, avatar_url: urlData.publicUrl });
-      location.reload();
-    }
-
-    async function entrar() {
-      const { error } = await _supabase.auth.signInWithPassword({ email: document.getElementById('email').value, password: document.getElementById('pass').value });
-      if (error) alert(error.message); else verificarSessao();
-    }
-
-    function compartilhar() { navigator.share ? navigator.share({title:'ArchiveOne', url:window.location.href}) : alert("Link: "+window.location.href); }
-    async function sair() { await _supabase.auth.signOut(); location.reload(); }
     window.onload = verificarSessao;
   </script>
 </body>
