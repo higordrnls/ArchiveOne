@@ -13,19 +13,16 @@
 
     .profile-area { position: absolute; top: 25px; right: 30px; z-index: 1100; display: flex; align-items: center; gap: 15px; }
     .icon-btn { cursor: pointer; opacity: 0.6; transition: opacity 0.3s; display: flex; align-items: center; }
-    .icon-btn:hover { opacity: 1; }
     .icon-btn svg { width: 20px; fill: #f5f5f5; }
 
-    .profile-trigger {
-      width: 40px; height: 40px; border-radius: 50%; border: 1px solid #333;
-      display: flex; align-items: center; justify-content: center; background: #1a1a1a; cursor: pointer; overflow: hidden;
+    /* BOTÃO TODAY */
+    .today-btn {
+      position: absolute; bottom: 120px; right: 30px; z-index: 1500;
+      background: rgba(255,255,255,0.05); border: 1px solid #333; color: #f5f5f5;
+      padding: 8px 15px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+      cursor: pointer; transition: 0.3s;
     }
-    .profile-modal {
-      position: absolute; top: 55px; right: 0; width: 280px; background: #0f0f0f; border: 1px solid #333;
-      padding: 25px; display: none; flex-direction: column; gap: 12px; z-index: 1200;
-    }
-    .profile-modal.active { display: flex; }
-    .profile-modal input { background: transparent; border: none; border-bottom: 1px solid #222; color: #fff; padding: 8px 0; font-size: 13px; outline: none; }
+    .today-btn:hover { background: #f5f5f5; color: #0a0a0a; }
 
     .container { text-align: center; height: 100vh; display: flex; justify-content: flex-start; padding-top: 18vh; align-items: center; flex-direction: column; }
     h1 { font-size: 48px; letter-spacing: 2px; margin-bottom: 10px; }
@@ -34,30 +31,29 @@
     .login-box { display: flex; flex-direction: column; gap: 15px; width: 250px; margin-top: 20px; z-index: 1000; }
     .login-box input { background: transparent; border: 1px solid #333; color: #fff; padding: 10px; outline: none; }
     .btn-login { background: #f5f5f5; color: #0a0a0a; border: none; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-    .btn-register { background: transparent; color: #f5f5f5; border: 1px solid #333; padding: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; text-decoration: none; text-align: center; margin-top: 5px; }
 
     /* TIMELINE */
-    .timeline-wrapper { position: absolute; bottom: 0; width: 100%; height: 380px; overflow-x: auto; overflow-y: visible; scrollbar-width: none; z-index: 500; cursor: grab; }
+    .timeline-wrapper { position: absolute; bottom: 0; width: 100%; height: 380px; overflow-x: auto; overflow-y: visible; scrollbar-width: none; z-index: 500; cursor: grab; scroll-behavior: smooth; }
     .timeline-wrapper::-webkit-scrollbar { display: none; }
-    .timeline-line { position: absolute; top: 80%; left: 0; width: 20000px; height: 1px; background: rgba(245, 245, 245, 0.1); }
+    .timeline-line { position: absolute; top: 80%; left: 0; width: 30000px; height: 1px; background: rgba(245, 245, 245, 0.1); }
     .timeline-items { display: inline-flex; gap: var(--timeline-gap, 120px); padding: 0 50vw; position: relative; top: 80%; transform: translateY(-50%); }
 
     .timeline-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
     .node-dot { width: 6px; height: 6px; background: #333; border-radius: 50%; margin-bottom: 12px; transition: 0.3s; }
-    .node-year { font-size: 10px; letter-spacing: 1px; opacity: 0.3; text-transform: uppercase; }
+    .node-year { font-size: 10px; letter-spacing: 1px; opacity: 0.3; text-transform: uppercase; white-space: nowrap; }
     .node-dot.has-content { background: #f5f5f5 !important; box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); width: 8px; height: 8px; }
 
-    /* CARD */
+    /* INFO CARD */
     .info-card {
       position: absolute; bottom: 75px; background: #0f0f0f; border: 1px solid #333;
-      padding: 15px; width: 200px; white-space: normal; display: none;
-      flex-direction: column; gap: 6px; text-align: left;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.9); z-index: 3000; pointer-events: none;
+      padding: 15px; width: 220px; white-space: normal; display: none;
+      flex-direction: column; gap: 8px; text-align: left;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9); z-index: 4000; pointer-events: none;
     }
     .info-card::after { content: ''; position: absolute; bottom: -60px; left: 50%; width: 1px; height: 60px; background: #f5f5f5; opacity: 0.4; }
     .timeline-node.active .info-card { display: flex; }
-    .card-title { font-size: 10px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #222; padding-bottom: 4px; margin-bottom: 2px; }
-    .card-item { font-size: 10px; opacity: 0.8; display: block; line-height: 1.4; }
+    .card-title { font-size: 10px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #222; padding-bottom: 5px; }
+    .card-item { font-size: 10px; opacity: 0.8; display: block; line-height: 1.4; color: #ccc; }
 
     .timeline-node.active .node-dot { background: #f5f5f5; transform: scale(1.6); }
     .timeline-node.active .node-year { opacity: 1; font-weight: bold; }
@@ -70,15 +66,12 @@
     <a href="articles.html">Articles</a><a href="books.html">Books</a><a href="interviews.html">Interviews</a><a href="movies.html">Movies</a><a href="podcasts.html">Podcasts</a><a href="series.html">Series</a><a href="songs.html">Songs</a><a href="tvshows.html">TV Shows</a>
   </nav>
 
+  <button class="today-btn hidden" id="today-btn" onclick="goToToday()">Today</button>
+
   <div id="user-area" class="profile-area hidden">
-    <div class="icon-btn" onclick="compartilhar()"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg></div>
     <div class="icon-btn" onclick="document.getElementById('profile-modal').classList.toggle('active')"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
-    <div class="profile-trigger"><svg viewBox="0 0 24 24" style="width:20px; fill:#666;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
-    <div class="profile-modal" id="profile-modal">
-        <input type="text" placeholder="Full Name">
-        <input type="text" placeholder="CPF">
-        <button class="btn-login" style="font-size:11px">Save</button>
-        <button onclick="sair()" class="btn-register" style="font-size:11px; width:100%">Logout</button>
+    <div class="profile-modal" id="profile-modal" style="position:absolute; top:50px; right:0; background:#0f0f0f; border:1px solid #333; padding:15px; display:none; flex-direction:column; gap:10px; width:150px;">
+        <button onclick="sair()" class="btn-login" style="font-size:10px; padding:8px;">Logout</button>
     </div>
   </div>
 
@@ -89,7 +82,6 @@
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="pass" placeholder="Password">
       <button class="btn-login" onclick="entrar()">Login</button>
-      <a href="register.html" class="btn-register">Register</a>
     </div>
     <div id="archive-links" class="hidden">
       <a href="archive.html" class="secondary-text" style="margin-top: 20px; display: inline-block;">enter archive</a>
@@ -103,33 +95,21 @@
 
   <script>
     const _supabase = supabase.createClient('https://vnablodqafeqyuxxirnn.supabase.co', 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR');
-    let currentZoom = 120;
     let logsByDate = {}; 
     let isDown = false;
     let startX, scrollLeft;
 
-    const timelineArea = document.getElementById('timeline-area');
-
-    timelineArea.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - timelineArea.offsetLeft; scrollLeft = timelineArea.scrollLeft; });
-    timelineArea.addEventListener('mouseleave', () => isDown = false);
-    timelineArea.addEventListener('mouseup', () => isDown = false);
-    timelineArea.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const walk = ((e.pageX - timelineArea.offsetLeft) - startX) * 2; timelineArea.scrollLeft = scrollLeft - walk; });
-
-    timelineArea.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      currentZoom = Math.min(Math.max(60, currentZoom + e.deltaY * -0.5), 1200);
-      document.getElementById('timeline-content').style.setProperty('--timeline-gap', currentZoom + 'px');
-      renderTimelineItems();
-    }, { passive: false });
-
     async function verificarSessao() {
-      const { data: { session } } = await _supabase.auth.getSession();
-      if (!session) {
+      const { data: { session }, error } = await _supabase.auth.getSession();
+      if (error || !session) {
         document.getElementById('login-form').classList.remove('hidden');
+        document.getElementById('timeline-area').classList.add('hidden');
       } else {
+        document.getElementById('login-form').classList.add('hidden');
         document.getElementById('archive-links').classList.remove('hidden');
         document.getElementById('user-area').classList.remove('hidden');
         document.getElementById('timeline-area').classList.remove('hidden');
+        document.getElementById('today-btn').classList.remove('hidden');
         carregarRegistros(session.user.id);
       }
     }
@@ -142,7 +122,6 @@
         if (data) {
           data.forEach(r => {
             const d = new Date(r.created_at);
-            // Uso de UTC para ignorar fuso horário local
             const iso = `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
             if (!logsByDate[iso]) logsByDate[iso] = [];
             logsByDate[iso].push(r.title);
@@ -156,33 +135,41 @@
       const container = document.getElementById('timeline-content');
       let html = '';
       const hoje = new Date();
-
-      if (currentZoom < 400) {
-        for (let i = -3; i <= 1; i++) {
-          const ano = hoje.getFullYear() + i;
-          html += `<div class="timeline-node" onclick="selectNode(this)"><div class="node-dot"></div><span class="node-year">${ano}</span></div>`;
-        }
-      } else {
-        for (let i = -40; i <= 20; i++) {
-          const d = new Date(); d.setDate(hoje.getDate() + i);
-          const dia = String(d.getDate()).padStart(2, '0');
-          const mes = String(d.getMonth() + 1).padStart(2, '0');
-          const ano = d.getFullYear();
-          const iso = `${ano}-${mes}-${dia}`;
-          const items = logsByDate[iso] || [];
-          
-          let cardHtml = `<div class="info-card">
-            <span class="card-title">${dia}/${mes}/${ano}</span>
-            ${items.length > 0 ? items.map(t => `<span class="card-item">• ${t}</span>`).join('') : '<span class="card-item" style="opacity:0.3">No logs found.</span>'}
-          </div>`;
-
-          html += `<div class="timeline-node ${i === 0 ? 'active' : ''}" onclick="selectNode(this)">
-            ${cardHtml}<div class="node-dot ${items.length > 0 ? 'has-content' : ''}"></div>
-            <span class="node-year">${d.toLocaleDateString('pt-BR', {day:'2-digit', month:'short'})}</span>
-          </div>`;
-        }
+      
+      // Range de 100 dias para garantir que a linha não suma
+      for (let i = -70; i <= 30; i++) {
+        const d = new Date(); d.setDate(hoje.getDate() + i);
+        const dia = String(d.getDate()).padStart(2, '0');
+        const mes = String(d.getMonth() + 1).padStart(2, '0');
+        const iso = `${d.getFullYear()}-${mes}-${dia}`;
+        const items = logsByDate[iso] || [];
+        
+        html += `<div class="timeline-node ${i === 0 ? 'active' : ''}" id="${i === 0 ? 'node-today' : ''}" onclick="selectNode(this)">
+          <div class="info-card">
+            <span class="card-title">${dia}/${mes}/${d.getFullYear()}</span>
+            ${items.length > 0 ? items.map(t => `<span class="card-item">• ${t}</span>`).join('') : '<span class="card-item" style="opacity:0.3">No records found.</span>'}
+          </div>
+          <div class="node-dot ${items.length > 0 ? 'has-content' : ''}"></div>
+          <span class="node-year">${d.toLocaleDateString('pt-BR', {day:'2-digit', month:'short'})}</span>
+        </div>`;
       }
       container.innerHTML = html;
+      setTimeout(goToToday, 100); // Centraliza no hoje ao carregar
+    }
+
+    function goToToday() {
+      const todayNode = document.getElementById('node-today');
+      const wrapper = document.getElementById('timeline-area');
+      if (todayNode) {
+        const offset = todayNode.offsetLeft - (wrapper.offsetWidth / 2);
+        wrapper.scrollTo({ left: offset, behavior: 'smooth' });
+        selectNode(todayNode);
+      }
+    }
+
+    function selectNode(el) {
+      document.querySelectorAll('.timeline-node').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
     }
 
     async function entrar() {
@@ -190,9 +177,20 @@
       if (error) alert(error.message); else location.reload();
     }
 
-    async function sair() { await _supabase.auth.signOut(); location.reload(); }
-    function selectNode(el) { document.querySelectorAll('.timeline-node').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
-    function compartilhar() { navigator.share({title:'ArchiveOne', url:window.location.href}); }
+    async function sair() { await _supabase.auth.signOut(); localStorage.clear(); location.reload(); }
+
+    // Eventos de Arrastar
+    const wrapper = document.getElementById('timeline-area');
+    wrapper.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - wrapper.offsetLeft; scrollLeft = wrapper.scrollLeft; wrapper.style.scrollBehavior = 'auto'; });
+    wrapper.addEventListener('mouseleave', () => isDown = false);
+    wrapper.addEventListener('mouseup', () => { isDown = false; wrapper.style.scrollBehavior = 'smooth'; });
+    wrapper.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - wrapper.offsetLeft;
+      const walk = (x - startX) * 2;
+      wrapper.scrollLeft = scrollLeft - walk;
+    });
 
     window.onload = verificarSessao;
   </script>
