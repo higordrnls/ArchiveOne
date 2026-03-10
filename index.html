@@ -44,15 +44,26 @@
     input { background: transparent; border: 1px solid #333; color: #fff; padding: 10px; outline: none; font-size: 14px; }
     input:focus { border-color: #666; }
 
-    button { background: #f5f5f5; color: #0a0a0a; border: none; padding: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: opacity 0.3s; }
-    button:hover { opacity: 0.9; }
-
-    .register-link { display: block; margin-top: 15px; font-size: 14px; opacity: 0.4; color: #f5f5f5; text-decoration: none; transition: opacity 0.3s; }
-    .register-link:hover { opacity: 1; }
+    /* ESTILO ÚNICO PARA BOTÕES (LOGIN E REGISTER) */
+    .btn-style { 
+      background: #f5f5f5; 
+      color: #0a0a0a; 
+      border: none; 
+      padding: 12px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      text-transform: uppercase; 
+      letter-spacing: 1px;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      transition: opacity 0.3s; 
+    }
+    .btn-style:hover { opacity: 0.9; }
 
     .hidden { display: none !important; }
     
-    #logout-btn { background: #f5f5f5; margin-top: 20px; width: 100px; }
+    #logout-btn { margin-top: 20px; width: 120px; }
   </style>
 </head>
 <body>
@@ -75,26 +86,23 @@
     <div id="login-form" class="login-box hidden">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="pass" placeholder="Password">
-      <button onclick="entrar()">Login</button>
-      <a href="register.html" class="register-link">register</a>
+      <button class="btn-style" onclick="entrar()">Login</button>
+      <a href="register.html" class="btn-style" style="margin-top: 5px;">Register</a>
     </div>
 
     <div id="archive-links" class="hidden">
       <a href="archive.html" class="secondary-text">enter archive</a>
       <div style="margin-top: 40px;">
-        <button onclick="sair()" id="logout-btn">LOGOUT</button>
+        <button onclick="sair()" id="logout-btn" class="btn-style">LOGOUT</button>
       </div>
     </div>
   </div>
 
   <script>
-    const supabaseUrl = 'https://vnablodqafeqyuxxirnn.supabase.co';
-    const supabaseKey = 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR';
-    const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const _supabase = supabase.createClient('https://vnablodqafeqyuxxirnn.supabase.co', 'sb_publishable_4uMYsIDc2Q9Cra31y8TOYg_q-RCGVYR');
 
     async function verificarSessao() {
       const { data: { session } } = await _supabase.auth.getSession();
-      
       const loginForm = document.getElementById('login-form');
       const archiveLinks = document.getElementById('archive-links');
 
